@@ -22,8 +22,8 @@ class Screen(tk.Tk):
     self.panel["columns"] = ("dominio", "data", "dias para o vencimento")
     self.panel.column("#0", width=0, stretch=tk.NO)
     self.panel.column("dominio", width=200, minwidth=100, stretch=tk.NO)
-    self.panel.column("data", width=150, minwidth=100, stretch=tk.NO)
-    self.panel.column("dias para o vencimento", width=150, minwidth=100, stretch=tk.NO)
+    self.panel.column("data", width=100, minwidth=100, stretch=tk.NO)
+    self.panel.column("dias para o vencimento", width=50, minwidth=50, stretch=tk.NO)
           
     self.panel.heading("dominio", text="Domínio")
     self.panel.heading("data", text="Data")
@@ -35,8 +35,8 @@ class Screen(tk.Tk):
     self.scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.panel.yview)
     self.panel.configure(yscrollcommand=self.scrollbar.set)
           
-    self.panel.grid(row=3, column=0, columnspan=2, rowspan=5,padx=10, pady=10, sticky="nsew")
-    self.scrollbar.grid(row=3, column=3, sticky="ns")
+    self.panel.grid(row=3, column=0, columnspan=2, rowspan=4, padx=85, sticky="nsew")
+    self.scrollbar.grid(row=4, column=1, sticky="ns")
 
     self.controls = tk.Label(container, text="CONTROLE DE TRIALS", font=("Arial", 13), bg="black", fg="white")
           
