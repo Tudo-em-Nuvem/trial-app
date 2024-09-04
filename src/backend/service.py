@@ -1,7 +1,7 @@
 import datetime
 from bson import ObjectId
 import pytz
-from repository import Repository
+from backend.repository import Repository
 
 class Service(Repository):
   def __init__(self):
@@ -17,7 +17,7 @@ class Service(Repository):
 
   def find_client_with_domain(self, domain):
     return self._find_client_by_domain(domain)
-  
+
   def find_client_with_id(self, id):
     return self._find_client_by_id(id)
 
@@ -25,16 +25,16 @@ class Service(Repository):
     id = ObjectId(id)
     self._update_client({'_id': id}, {'$set': fields})
 
-  def add_product_to_client(self, domain, id_product, date_renovation, licences, price = None):
+  def add_product_to_client(self, domain, id_product, date_renovation, licenses, price = None):
     product = self._find_product_by_id(id_product)
-    
+
     if not product:
       raise Exception('Product not found')
-    
+
     date =self._convert_date_time(date_renovation)
     product['date_renovation'] = date
 
-    product['licences'] = licences
+    product['licenses'] = licenses
     product['price'] = price if price else product['price']
 
     client = self._find_client_by_domain(domain)
@@ -54,7 +54,7 @@ class Service(Repository):
 
   def list_products(self):
     return self._find_products()
-  
+
   def _convert_date_time(self, date):
     date_obj = datetime.datetime.strptime(date, '%d/%m/%Y')
     date_utc = date_obj.replace(tzinfo=pytz.UTC)

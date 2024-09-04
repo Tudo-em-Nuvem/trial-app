@@ -10,7 +10,7 @@ class Repository:
     self.ClientCollection  = db['Clients']
     self.productCollection = db['Products']
 
-  def _create_client(self, domain, tenantCreation, GDAP, CobrançaRecorrente, Info, Obs, emailAdmin):
+  def _create_client(self, domain, tenantCreation, GDAP, CobrancaRecorrente, Info, Obs, emailAdmin):
     if self.ClientCollection.find_one({'domain': domain}):
       raise Exception('Client already exists')
 
@@ -19,7 +19,7 @@ class Repository:
       'tenantCreation'    : tenantCreation,
       'produtos'          : [],
       'GDAP'              : GDAP,
-      'CobrançaRecorrente': CobrançaRecorrente,
+      'cobrancaRecorrente': CobrancaRecorrente,
       'Info'              : Info,
       'Obs'               : Obs,
       'emailAdmin'        : emailAdmin
