@@ -16,7 +16,7 @@ class Events():
       page = pages.client_page(client_id=client_id)
       active_window.load_html(page)
 
-  def open_product(self, product_id):
+  def open_product_by_client(self, product_id):
     active_window = webview.active_window()
     if active_window:
       page = pages.product_by_client_page(product_id=product_id)
@@ -25,11 +25,23 @@ class Events():
   def open_list_products_to_client(self):
     active_window = webview.active_window()
     if active_window:
-      page = pages.list_products_in_client_page()
+      page = pages.list_products_to_add_in_client_page()
       active_window.load_html(page)
 
   def open_product_to_add_in_client(self, product_id):
     active_window = webview.active_window()
     if active_window:
       page = pages.add_product_to_client_page(product_id=product_id)
+      active_window.load_html(page)
+
+  def open_register_client(self):
+    active_window = webview.active_window()
+    if active_window:
+      page = pages.register_client_page()
+      active_window.load_html(page)
+
+  def open_clients(self):
+    active_window = webview.active_window()
+    if active_window:
+      page = pages.clients_page
       active_window.load_html(page)

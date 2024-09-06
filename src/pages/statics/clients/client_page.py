@@ -3,6 +3,9 @@ service = get_service()
 
 def client_page(client_id):
   client = service.find_client_with_id(client_id)
+  if client is None:
+    client = service.find_client_with_domain(client_id)
+
   set_client_for_client_page(client)
 
   html = f"""<html>
@@ -10,9 +13,33 @@ def client_page(client_id):
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
       <style>
         body {{
-          color: white;
-          background-color: #2c2f33;
-          }}
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+        }}
+
+        .container-fluid {{
+          max-width: 960px;
+          margin: 0 auto;
+          padding: 20px;
+        }}
+
+        h1 {{
+          text-align: center;
+        }}
+
+        .mb-3 {{
+          margin-bottom: 1rem;
+        }}
+
+        .form-label {{
+          font-weight: bold;
+        }}
+
+        .form-control {{
+          border: 1px solid #ccc;
+          border-radius: 0.25rem;
+          padding: 0.375rem 0.75rem;
+        }}
 
         .inLine {{
           display: flex;
@@ -21,12 +48,66 @@ def client_page(client_id):
 
         .notInline {{
           display: flex;
+          margin-right: 1rem;
           flex-direction: column;
+        }}
+
+        .form-select {{
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background: #fff url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0   
+        0 16 16"><path d="M4 5h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm2 5a2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2zm8-4a2 2 0 0 1-2 2 2 2 0 0 1 2-2z"/></svg>) no-repeat right .5rem center;
+          padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        }}
+
+        .btn-primary {{
+          background-color: #007bff;
+          border-color: #007bff;
+          color: #fff;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          border-radius: 0.25rem;   
+
+        }}
+
+        table {{
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+        }}
+
+        th, td {{
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: center;
+        }}
+
+        th {{
+          background-color:   
+        #f2f2f2;
         }}
 
         td {{
           cursor: pointer;
         }}
+
+        .buttonsDiv {{
+          display: flex;
+          justify-content: space-between;
+
+        }}
+
+        .btnAttClient {{
+          width: 80%;
+          border-radius: 6px 0px 0px 6px;
+        }}
+
+        .btnDeleteClient {{
+          width: 20%;
+          border-radius:  0px 6px 6px 0px;
+          }}
       </style>
     </head>
     <body>
@@ -38,11 +119,11 @@ def client_page(client_id):
         </div>
         <div class="mb-3">
           <label class="form-label">Informações</label>
-          <input type="text" id="info" value="{client['Info']}" class="form-control">
+          <input type="text" id="info" value="{client['info']}" class="form-control">
         </div>
         <div class="mb-3">
           <label class="form-label">Observações</label>
-          <input type="text" id="obs" value="{client['Obs']}" class="form-control">
+          <input type="text" id="obs" value="{client['obs']}" class="form-control">
         </div>
         <div class="mb-3">
           <label class="form-label">E-mail Adm</label>
@@ -51,8 +132,8 @@ def client_page(client_id):
 
         <div class="mb-3 inLine">
           <div class = "notInline">
-            <label for="GDAP" class="form-label">GDAP</label>
-            {_get_select_menu_sim_nao(client, 'GDAP')}
+            <label for="gdap" class="form-label">gdap</label>
+            {_get_select_menu_sim_nao(client, 'gdap')}
           </div>
 
           <div class ="notInline">
@@ -60,8 +141,10 @@ def client_page(client_id):
             {_get_select_menu_sim_nao(client, 'cobrancaRecorrente')}
           </div>
         </div>
-
-        <button type="button" class="btn btn-primary" onclick="sendInputValue()">Atualizar Cliente</button>
+        <div class="buttonsDiv">
+          <button type="button" class="btnAttClient btn btn-primary" onclick="sendInputValue()">Atualizar Cliente</button>
+          <button type="button" class="btnDeleteClient btn btn-danger" onclick="deleteCliente()">Excluir Cliente</button>
+        </div>
         <div class="table" style="margin-top: 1.25rem">
           {_get_menu_products_by_client(client)}
         </div>
@@ -78,7 +161,7 @@ def client_page(client_id):
         var inputInfo = document.getElementById('info')
         var inputObs = document.getElementById('obs')
         var inputEmail = document.getElementById('email')
-        var inputGDAP = document.getElementById('GDAP')
+        var inputGDAP = document.getElementById('gdap')
         var inputCobrancaRecorrente = document.getElementById('cobrancaRecorrente')
 
         var actualizedInfoAndObs = {{
@@ -86,11 +169,15 @@ def client_page(client_id):
           info: inputInfo.value,
           obs: inputObs.value,
           email: inputEmail.value,
-          GDAP: inputGDAP.value,
+          gdap: inputGDAP.value,
           cobrancaRecorrente: inputCobrancaRecorrente.value
         }}
 
         pywebview.api.update_client_info(actualizedInfoAndObs)
+      }}
+
+      function deleteCliente() {{
+        pywebview.api.delete_client()
       }}
 
       function clickTableProductInClient(row) {{
@@ -99,7 +186,7 @@ def client_page(client_id):
       }}
 
       function addProduct() {{
-        pywebview.api.addProductInClient()
+        pywebview.api.listProductsToAddInClient()
       }}
     </script>
   </html>
@@ -112,7 +199,7 @@ def _get_menu_products_by_client(client):
   """
 
 def _get_select_menu_sim_nao(client, gdap_or_cobranca_recorrente):
-    tipo = "GDAP" if gdap_or_cobranca_recorrente == "GDAP" else "cobrancaRecorrente"
+    tipo = "gdap" if gdap_or_cobranca_recorrente == "gdap" else "cobrancaRecorrente"
 
     html = f"""<select name="{tipo}" id="{tipo}" class="form-select">
         1

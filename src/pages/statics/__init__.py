@@ -1,6 +1,10 @@
-from pages.statics.add_product_to_client_page import add_product_to_client_page
-from pages.statics.client_page import client_page
-from pages.statics.list_products_in_client_page import list_product_in_client_page
-from pages.statics.main_page import main_page
-from pages.statics.product_by_client_page import product_by_client_page
+from pages.statics.clients.add_product_to_client_page import add_product_to_client_page
+from pages.statics.clients.client_page import client_page
+from pages.statics.clients.list_products_to_add_in_client_page import list_products_to_add_in_client_page
+from pages.statics.clients.product_by_client_page import product_by_client_page
+from pages.statics.clients.clients_page import clients_page
+from pages.statics.clients.register_client_page import register_client_page
 
+from pages.statics.products.products_page import products_page
+
+from pages.statics.main_page import main_page

@@ -7,63 +7,47 @@ class Repository:
     client = MongoClient("mongodb+srv://vini:kIBaEiozt0Jq60Jp@cluster0.2zppx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client['Trials']
 
-    self.ClientCollection  = db['Clients']
-    self.productCollection = db['Products']
+    self.__ClientCollection  = db['Clients']
+    self.__productCollection = db['Products']
 
-  def _create_client(self, domain, tenantCreation, GDAP, CobrancaRecorrente, Info, Obs, emailAdmin):
-    if self.ClientCollection.find_one({'domain': domain}):
-      raise Exception('Client already exists')
-
-    self.ClientCollection.insert_one({
-      'domain'            : domain,
-      'tenantCreation'    : tenantCreation,
-      'produtos'          : [],
-      'GDAP'              : GDAP,
-      'cobrancaRecorrente': CobrancaRecorrente,
-      'Info'              : Info,
-      'Obs'               : Obs,
-      'emailAdmin'        : emailAdmin
-    })
+  def _create_client(self, client):
+    return self.__ClientCollection.insert_one(client)
 
   def _find_clients(self):
-    return list(self.ClientCollection.find())
+    return list(self.__ClientCollection.find())
 
   def _find_client_by_domain(self, domain):
-    return self.ClientCollection.find_one({'domain': domain})
+    return self.__ClientCollection.find_one({'domain': domain})
 
   def _find_client_by_id(self, _id):
     _id = ObjectId(_id)
-    return self.ClientCollection.find_one({'_id': _id})
+    return self.__ClientCollection.find_one({'_id': _id})
   
   def _update_client(self, filter, update):
-    self.ClientCollection.update_one(filter, update)
+    self.__ClientCollection.update_one(filter, update)
     
   def _delete_client(self, _id):
-    self.ClientCollection.delete_one({'_id': _id})
+    self.__ClientCollection.delete_one({'_id': _id})
 
   def _delete_client_by_domain(self, domain):
-    self.ClientCollection.delete_one({'domain': domain})
+    self.__ClientCollection.delete_one({'domain': domain})
   
-  def _create_product(self, name, price):
-    if self.productCollection.find_one({'name': name}):
-      raise Exception('Product already exists')
+  # Products repository
 
-    self.productCollection.insert_one({
-    'name'  : name,
-    'price' : price
-    })
+  def _create_product(self, product):
+    self.__productCollection.insert_one(product)
 
   def _find_products(self):
-    return list(self.productCollection.find())
+    return list(self.__productCollection.find())
 
   def _find_product_by_name(self, name):
-    return self.productCollection.find_one({'name': name})
+    return self.__productCollection.find_one({'name': name})
   
   def _find_product_by_id(self, _id):
-    return self.productCollection.find_one({'_id': _id})
+    return self.__productCollection.find_one({'_id': _id})
 
   def _update_product(self, filter, update):
-    self.productCollection.update_one(filter, update)
+    self.__productCollection.update_one(filter, update)
 
   def _delete_product(self, _id):
-    self.productCollection.delete_one({'_id': _id})
+    self.__productCollection.delete_one({'_id': _id})

@@ -7,29 +7,63 @@ def main_page():
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <style>
 
+          body {{
+            font-family: Arial, sans-serif; /* Choose a suitable font */
+            background-color: #f0f0f0;
+          }}
+
+          .container-fluid {{
+            max-width: 960px; /* Adjust the max width as needed */
+            margin: 0 auto;
+            padding: 20px;
+          }}
+
+          h3 {{
+            color: #333;
+            text-align: center;
+          }}
+
+          table {{
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+          }}
+
+          th, td {{
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+          }}
+
+          th {{
+            background-color: #f2f2f2;
+          }}   
+
           .info {{
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
           }}
 
           .item {{
-            color: white;
-            background-color: #23272a;
-            margin: 0.625rem;
-            align-items: center;
-            padding: 0.625rem;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
           }}
 
-          body {{
-            color: white;
-            background-color: #2c2f33;
+          .item h3 {{
+            margin-bottom: 10px;
+          }}
+
+          .item h4 {{
+            font-size: 18px;
+            font-weight: bold;
           }}
 
           td {{
             cursor: pointer;
           }}
-
         </style>
       </head>
 
@@ -66,8 +100,8 @@ def main_page():
 """
 
 def _get_menu_clients():
-  clients = service.list_clients()[0:5]
-
+  clients = service.get_clients_by_date_products()[0:5]
+  
   return f"""<table class="table"><tr> <th scope="col">Domínio</th><th scope="col">Data</th></tr>
         {"".join([f"<tr data-id={client["_id"]} onclick='clickTableClients(this)'><td>{client['domain']}</td> <td>{min([product['date_renovation'] for product in client['produtos']]).strftime("%d/%m/%Y")}</td></tr>" for client in clients])}
       </table>

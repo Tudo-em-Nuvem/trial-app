@@ -11,12 +11,18 @@ class Window():
     self.Service = get_service()
 
     api = Api()
-    self.window = webview.create_window('Main Window', html='<h1>Carregando...</h1>', js_api=api)
+    self.window = webview.create_window('Main Window', html='<h1>Carregando...</h1>', js_api=api, width=800, height=720,focus=True,)
     self.window.events.loaded += self.Events.on_loaded
     webview.start(menu=self.menu)
 
   def load_main_page(self):
     self.window.load_html(pages.main_page)
+
+  def load_clients_page(self):
+    self.window.load_html(pages.clients_page)
+
+  def products_page(self):
+    self.window.load_html(pages.products_page)
 
   @property
   def menu(self):
@@ -25,8 +31,8 @@ class Window():
         'Menu',
         [
           wm.MenuAction('Home', self.load_main_page),
-          wm.MenuAction('Clientes', click_me),
-          wm.MenuAction('Produtos', click_me),
+          wm.MenuAction('Clientes', self.load_clients_page),
+          wm.MenuAction('Produtos', self.products_page),
         ],
       ),
     ]

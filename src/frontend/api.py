@@ -17,25 +17,25 @@ class Api:
     self.Events.open_client(id)
 
   def update_client_info(self, value):
-    domain, attInfo, attObs, attEmail, attGDAP, attCobrancaRecorrente = value['domain'], value['info'], value['obs'], value['email'], value['GDAP'], value['cobrancaRecorrente']
+    domain, attInfo, attObs, attEmail, attGDAP, attCobrancaRecorrente = value['domain'], value['info'], value['obs'], value['email'], value['gdap'], value['cobrancaRecorrente']
     client = get_client_for_client_page()
     updates = {}
  
     if domain != client['domain']:
       updates['domain'] = domain
 
-    if attInfo != client['Info']:
-      updates['Info'] = attInfo
+    if attInfo != client['info']:
+      updates['info'] = attInfo
     
-    if attObs != client['Obs']:
-      updates['Obs'] = attObs
+    if attObs != client['obs']:
+      updates['obs'] = attObs
     
     if attEmail != client['emailAdmin']:
       updates['emailAdmin'] = attEmail
 
     attGDAP = True if attGDAP == 'sim' else False
-    if attGDAP != client['GDAP']:
-      updates['GDAP'] = attGDAP
+    if attGDAP != client['gdap']:
+      updates['gdap'] = attGDAP
 
     attCobrancaRecorrente = True if attCobrancaRecorrente == 'sim' else False
     if attCobrancaRecorrente != client['cobrancaRecorrente']:
@@ -44,7 +44,7 @@ class Api:
     self.Service.update_client_by_id(client['_id'], updates)
 
   def clickTableProductInClient(self, id):
-    self.Events.open_product(id)
+    self.Events.open_product_by_client(id)
 
   def update_product_by_client(self, value):
     price, licenses, date_renovation = value['price'], value['licenses'], value['date_renovation']
@@ -63,6 +63,7 @@ class Api:
         client['produtos'][product_index]['date_renovation'] = date_renovation
 
     self.Service.update_client_by_id(client['_id'], {'produtos': client['produtos']})
+    self.Events.open_client(client['_id'])
 
   def remove_product_by_client(self):
     client = get_client_for_client_page()
@@ -73,9 +74,31 @@ class Api:
     self.Service.update_client_by_id(client['_id'], {'produtos': client['produtos']})
     self.Events.open_client(client['_id'])
 
-  def clickTableProductInClient(self, id):
+  def clickTableProductToAddInClient(self, id):
     self.Events.open_product_to_add_in_client(id)
 
-  def addProductInClient(self):
-    #client = get_client_for_client_page()
+  def listProductsToAddInClient(self):
     self.Events.open_list_products_to_client()
+
+  def addProductInClient(self, product):
+    client = get_client_for_client_page()
+    product['id'] = get_product_for_client()['_id']
+    splitDate = product['date_renovation'].split('-')
+    product['date_renovation']  = f"{splitDate[2]}/{splitDate[1]}/{splitDate[0]}"
+    self.Service.add_product_to_client(client['domain'], product['id'], product['date_renovation'], int(product['licenses']), float(product['price']))
+    self.Events.open_client(client['_id'])
+
+  def open_register_client(self):
+    self.Events.open_register_client()
+
+  def registerClient(self, client):
+    client = self.Service.register_client(client)
+    self.Events.open_client(client.inserted_id)
+
+  def delete_client(self):
+    client = get_client_for_client_page()
+    self.Service.delete_client_by_id(client['_id'])
+    self.Events.open_clients()
+
+  # def clickTableProductToRegisterProduct(self, id):
+  #   self.Events.(id)

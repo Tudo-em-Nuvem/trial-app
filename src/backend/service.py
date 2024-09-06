@@ -7,10 +7,28 @@ class Service(Repository):
   def __init__(self):
     super().__init__()
 
-  def register_client(self, domain, tenantCreation, GDAP, CobrançaRecorrente, Info, Obs, emailAdmin):
-    if self._find_client_by_domain(domain):
+  # Clients Service
+
+  def register_client(self, client):
+    if self._find_client_by_domain(client['domain']):
       raise Exception('Client already exists')
-    self._create_client(domain, tenantCreation, GDAP, CobrançaRecorrente, Info, Obs, emailAdmin)
+    
+    gdap = True if client['gdap'] == 'sim' else False
+    cobranca_recorrente = True if client['cobrancaRecorrente'] == 'sim' else False
+    tenant_creation = datetime.datetime.strptime(client['date_tenant'], '%Y-%m-%d')
+
+    client = {
+      'domain'            : client['domain'],
+      'tenantCreation'    : tenant_creation,
+      'produtos'          : [],
+      'gdap'              : gdap,
+      'cobrancaRecorrente': cobranca_recorrente,
+      'info'              : client['info'],
+      'obs'               : client['obs'],
+      'emailAdmin'        : client['email_admin']
+    }
+
+    return self._create_client(client)
 
   def list_clients(self):
     return self._find_clients()
@@ -31,9 +49,10 @@ class Service(Repository):
     if not product:
       raise Exception('Product not found')
 
-    date =self._convert_date_time(date_renovation)
+    date = self._convert_date_time(date_renovation)
+    product['_id'] = ObjectId()
+    product['product_id'] = product['_id']
     product['date_renovation'] = date
-
     product['licenses'] = licenses
     product['price'] = price if price else product['price']
 
@@ -46,22 +65,8 @@ class Service(Repository):
     client['produtos'] = list(filter(lambda product: product['_id'] != id_product, client['produtos']))
     self._update_client({'domain': domain}, {'$set': {'produtos': client['produtos']}})
 
-  def register_product(self, name, price):
-    if self._find_product_by_name(name):
-      raise Exception('Product already exists')
-
-    self._create_product(name, price)
-
-  def list_products(self):
-    return self._find_products()
-
-  def _convert_date_time(self, date):
-    date_obj = datetime.datetime.strptime(date, '%d/%m/%Y')
-    date_utc = date_obj.replace(tzinfo=pytz.UTC)
-    return date_utc
-
   def get_clients_by_date_products(self) -> list[object]:
-    clients = self._find_clients()
+    clients = [clients for clients in self._find_clients() if len(clients["produtos"]) > 0]
 
     def get_min_date(client):
       product_dates = [product['date_renovation'] for product in client['produtos']]
@@ -69,3 +74,29 @@ class Service(Repository):
 
     clients.sort(key=lambda client: get_min_date(client))
     return clients
+
+  def delete_client_by_id(self, id):
+    self._delete_client(ObjectId(id))
+  # Products Service
+
+  def register_product(self, name, price):
+    if self._find_product_by_name(name):
+      raise Exception('Product already exists')
+
+    product = {"name": name, "price": price}
+
+    self._create_product(product)
+
+  def list_products(self):
+    return self._find_products()
+
+  def find_product_by_id(self, _id):
+    return self._find_product_by_id(ObjectId(_id))
+
+  # Private methods
+
+  def _convert_date_time(self, date):
+    date_obj = datetime.datetime.strptime(date, '%d/%m/%Y')
+    date_utc = date_obj.replace(tzinfo=pytz.UTC)
+    return date_utc
+
