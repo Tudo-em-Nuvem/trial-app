@@ -56,8 +56,7 @@ def client_page(client_id):
           appearance: none;
           -webkit-appearance: none;
           -moz-appearance: none;
-          background: #fff url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0   
-        0 16 16"><path d="M4 5h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm2 5a2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2zm8-4a2 2 0 0 1-2 2 2 2 0 0 1 2-2z"/></svg>) no-repeat right .5rem center;
+          background: #fff;
           padding: 0.375rem 2.25rem 0.375rem 0.75rem;
         }}
 
@@ -141,10 +140,12 @@ def client_page(client_id):
             {_get_select_menu_sim_nao(client, 'cobrancaRecorrente')}
           </div>
         </div>
+
         <div class="buttonsDiv">
           <button type="button" class="btnAttClient btn btn-primary" onclick="sendInputValue()">Atualizar Cliente</button>
           <button type="button" class="btnDeleteClient btn btn-danger" onclick="deleteCliente()">Excluir Cliente</button>
         </div>
+
         <div class="table" style="margin-top: 1.25rem">
           {_get_menu_products_by_client(client)}
         </div>

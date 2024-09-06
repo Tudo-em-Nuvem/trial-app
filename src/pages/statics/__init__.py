@@ -6,5 +6,6 @@ from pages.statics.clients.clients_page import clients_page
 from pages.statics.clients.register_client_page import register_client_page
 
 from pages.statics.products.products_page import products_page
+from pages.statics.products.product_page import product_page
 
 from pages.statics.main_page import main_page

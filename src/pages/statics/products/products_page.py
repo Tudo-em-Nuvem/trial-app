@@ -56,9 +56,9 @@ def products_page():
       </div>
     </body>
     <script>
-        function clickTableProductToRegisterProduct(row) {{
+        function click_table_product(row) {{
           var string = row.dataset.id;
-          pywebview.api.clickTableProductToRegisterProduct(string).then(showResponse)
+          pywebview.api.click_table_product(string).then(showResponse)
         }}
     </script>
   </html>
@@ -70,5 +70,5 @@ def _get_menu_products():
   products = service.list_products()
 
   return f"""<table class="table" style="margin-top: 1.25rem"><tr><th scope="col">Nome</th><th scope="col">Valor</th></tr>
-    {''.join([f'<tr data-id={product["_id"]} onclick="clickTableProductToRegisterProduct(this)"><td>{product["name"]}</td><td>{product["price"]}</td></tr>' for product in products])}
+    {''.join([f'<tr data-id={product["_id"]} onclick="click_table_product(this)"><td>{product["name"]}</td><td>{product["price"]}</td></tr>' for product in products])}
   """

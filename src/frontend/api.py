@@ -95,6 +95,9 @@ class Api:
     client = self.Service.register_client(client)
     self.Events.open_client(client.inserted_id)
 
+  def click_table_product(self, product_id):
+    self.Events.open_product(product_id)
+
   def delete_client(self):
     client = get_client_for_client_page()
     self.Service.delete_client_by_id(client['_id'])
