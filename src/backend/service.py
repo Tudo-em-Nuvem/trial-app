@@ -25,7 +25,7 @@ class Service(Repository):
       'cobrancaRecorrente': cobranca_recorrente,
       'info'              : client['info'],
       'obs'               : client['obs'],
-      'emailAdmin'        : client['email_admin']
+      'emailAdmin'        : client['email']
     }
 
     return self._create_client(client)
