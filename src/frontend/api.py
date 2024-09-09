@@ -1,7 +1,7 @@
 from bson import ObjectId
 from frontend.events import Events
 import sys
-from globals import get_client_for_client_page, get_service, get_product_for_client
+from globals import get_client_for_client_page, get_service, get_product_for_client, get_product_for_product_page
 import datetime
 
 class Api:
@@ -47,7 +47,7 @@ class Api:
     self.Events.open_product_by_client(id)
 
   def update_product_by_client(self, value):
-    price, licenses, date_renovation = value['price'], value['licenses'], value['date_renovation']
+    price, licenses, date_renovation, expired = value['price'], value['licenses'], value['date_renovation'], value['expired']
 
     client = get_client_for_client_page()
     product = get_product_for_client()
@@ -57,7 +57,8 @@ class Api:
     if product_index is not None:
       client['produtos'][product_index]['price'] = float(price)
       client['produtos'][product_index]['licenses'] = int(licenses)
-
+      client['produtos'][product_index]['expired'] = True if expired == 'sim' else False
+      print(client)
       if date_renovation.strip() != '':
         date_renovation = datetime.datetime.strptime(date_renovation, '%Y-%m-%d')
         client['produtos'][product_index]['date_renovation'] = date_renovation
@@ -103,5 +104,30 @@ class Api:
     self.Service.delete_client_by_id(client['_id'])
     self.Events.open_clients()
 
-  # def clickTableProductToRegisterProduct(self, id):
-  #   self.Events.(id)
+  def update_product(self, value):
+    product = get_product_for_product_page()
+    name, price = value['name'], value['price']
+
+    updates = {}
+    if name != product['name']:
+      updates['name'] = name
+
+    if price != product['price']:
+      updates['price'] = float(price)
+
+    self.Service.update_product_by_id(product['_id'], updates)
+
+  def delete_product(self):
+    product = get_product_for_product_page()
+    self.Service.delete_product_by_id(product['_id'])
+    self.Events.open_products()
+
+  def open_register_product(self):
+    self.Events.open_register_product()
+  
+  def register_product(self, product):
+    name, price = product['name'], product['price']
+    price = float(price)
+    product = self.Service.register_product(name, price)
+    self.Events.open_product(product.inserted_id)
+

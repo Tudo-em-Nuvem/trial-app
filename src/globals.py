@@ -1,12 +1,12 @@
 from backend.service import Service
 
-client_for_client_page = None
-get_client_for_client_page = lambda: client_for_client_page
+_client_for_client_page = None
+get_client_for_client_page = lambda: _client_for_client_page
 
 def set_client_for_client_page(client):
-  global client_for_client_page
-  client_for_client_page = client
-  return client_for_client_page
+  global _client_for_client_page
+  _client_for_client_page = client
+  return _client_for_client_page
 
 defined_service = False
 service = None
@@ -26,3 +26,10 @@ def set_product_for_client(product):
   global product_for_client
   product_for_client = product
   return product_for_client
+
+_product_for_product_page = None
+get_product_for_product_page = lambda: _product_for_product_page
+def set_product_for_product_page(product):
+  global _product_for_product_page
+  _product_for_product_page = product
+  return _product_for_product_page

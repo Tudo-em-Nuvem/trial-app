@@ -38,7 +38,6 @@ def client_page(client_id):
         .form-control {{
           border: 1px solid #ccc;
           border-radius: 0.25rem;
-          padding: 0.375rem 0.75rem;
         }}
 
         .inLine {{
@@ -67,8 +66,7 @@ def client_page(client_id):
           padding: 0.375rem 0.75rem;
           font-size: 1rem;
           line-height: 1.5;
-          border-radius: 0.25rem;   
-
+          border-radius: 0.25rem;
         }}
 
         table {{
@@ -112,21 +110,21 @@ def client_page(client_id):
     <body>
       <div class="container-fluid">
         <h1>{client['domain']}</h1>
-        <div class="mb-3">
+        <div class="mb-3 notInLine">
           <label class="form-label">Domínio</label>
-          <input type="text" id="domain" value="{client['domain']}" class="form-control">
+          <input type="text" id="domain" value="{client['domain']}" data-original="{client['domain']}" class="form-control">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 notInLine">
           <label class="form-label">Informações</label>
-          <input type="text" id="info" value="{client['info']}" class="form-control">
+          <textarea style="height: 100px;" id="info" data-original="{client['info']}" class="form-control">{client['info']}</textarea>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 notInLine">
           <label class="form-label">Observações</label>
-          <input type="text" id="obs" value="{client['obs']}" class="form-control">
+          <textarea style="height: 100px;" id="obs" data-original="{client['obs']}" class="form-control">{client['obs']}</textarea>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 notInLine">
           <label class="form-label">E-mail Adm</label>
-          <input type="text" id="email" value="{client['emailAdmin']}" class="form-control">
+          <input type="text" id="email" value="{client['emailAdmin']}" data-original="{client['emailAdmin']}" class="form-control">
         </div>
 
         <div class="mb-3 inLine">
@@ -142,7 +140,7 @@ def client_page(client_id):
         </div>
 
         <div class="buttonsDiv">
-          <button type="button" class="btnAttClient btn btn-primary" onclick="sendInputValue()">Atualizar Cliente</button>
+          <button type="button" class="btnAttClient btn btn-primary" onclick="sendInputValue()" disabled>Atualizar Cliente</button>
           <button type="button" class="btnDeleteClient btn btn-danger" onclick="deleteCliente()">Excluir Cliente</button>
         </div>
 
@@ -154,17 +152,67 @@ def client_page(client_id):
           <button type="button" class="btn btn-primary" onclick="addProduct()">Adicionar Produto</button>
         </div>
       </div>
-
     </body>
-    <script>
-      function sendInputValue() {{
-        var inputDomain = document.getElementById('domain')
-        var inputInfo = document.getElementById('info')
-        var inputObs = document.getElementById('obs')
-        var inputEmail = document.getElementById('email')
-        var inputGDAP = document.getElementById('gdap')
-        var inputCobrancaRecorrente = document.getElementById('cobrancaRecorrente')
 
+    <script>
+      var inputDomain = document.getElementById('domain')
+      var inputInfo = document.getElementById('info')
+      var inputObs = document.getElementById('obs')
+      var inputEmail = document.getElementById('email')
+      var inputGDAP = document.getElementById('gdap')
+      var inputCobrancaRecorrente = document.getElementById('cobrancaRecorrente')
+
+      function checkInputsIsDifferent() {{
+        const originalDomain = inputDomain.getAttribute('data-original')
+        const originalInfo = inputInfo.getAttribute('data-original')
+        const originalObs = inputObs.getAttribute('data-original')
+        const originalEmail = inputEmail.getAttribute('data-original')
+        const originalGDAP = inputGDAP.getAttribute('data-original')
+        const originalCobrancaRecorrente = inputCobrancaRecorrente.getAttribute('data-original')
+
+        return inputDomain.value !== originalDomain ||
+          inputInfo.value !== originalInfo ||
+          inputObs.value !== originalObs ||
+          inputEmail.value !== originalEmail ||
+          inputGDAP.value !== originalGDAP ||
+          inputCobrancaRecorrente.value !== originalCobrancaRecorrente
+      }}
+
+      inputDomain.addEventListener('input', () => {{
+        // transform h1 domain
+        document.querySelector('h1').innerText = inputDomain.value
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      inputInfo.addEventListener('input', () => {{
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      inputObs.addEventListener('input', () => {{
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      inputEmail.addEventListener('input', () => {{
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      inputGDAP.addEventListener('input', () => {{
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      inputCobrancaRecorrente.addEventListener('input', () => {{
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      }})
+
+      function sendInputValue() {{
+        inputDomain.setAttribute('data-original', inputDomain.value)
+        inputInfo.setAttribute('data-original', inputInfo.value)
+        inputObs.setAttribute('data-original', inputObs.value)
+        inputEmail.setAttribute('data-original', inputEmail.value)
+        inputGDAP.setAttribute('data-original', inputGDAP.value)
+        inputCobrancaRecorrente.setAttribute('data-original', inputCobrancaRecorrente.value)
+        document.querySelector('.btnAttClient').disabled = !checkInputsIsDifferent()
+      
         var actualizedInfoAndObs = {{
           domain: inputDomain.value,
           info: inputInfo.value,
@@ -192,17 +240,18 @@ def client_page(client_id):
     </script>
   </html>
   """
+
   return html
 
 def _get_menu_products_by_client(client):
   return f"""<table class="table"><tr> <th scope="col">Produto</th><th scope="col">licencas</th><th scope="col">Valor</th><th scope="col">total</th><th scope="col">Renovação</th></tr>
-        {"".join([f"<tr data-id={product['_id']} onclick='clickTableProductInClient(this)'><td>{product['name']}</td> <td>{product['licenses']}</td><td>$ {product['price']}</td><td>$ {round(product['price'] * product['licenses'], 2)}</td><td>{product['date_renovation'].strftime("%d/%m/%Y")}</td></tr>" for product in client['produtos']])}
+    {"".join([f"<tr data-id={product['_id']} onclick='clickTableProductInClient(this)'><td>{product['name']}</td> <td>{product['licenses']}</td><td>$ {product['price']}</td><td>$ {round(product['price'] * product['licenses'], 2)}</td><td>{product['date_renovation'].strftime("%d/%m/%Y")}</td></tr>" for product in client['produtos']])}
   """
 
 def _get_select_menu_sim_nao(client, gdap_or_cobranca_recorrente):
     tipo = "gdap" if gdap_or_cobranca_recorrente == "gdap" else "cobrancaRecorrente"
 
-    html = f"""<select name="{tipo}" id="{tipo}" class="form-select">
+    html = f"""<select name="{tipo}" id="{tipo}" class="form-select"  data-original="?">
         1
         2
       </select>
@@ -215,4 +264,5 @@ def _get_select_menu_sim_nao(client, gdap_or_cobranca_recorrente):
       html = html.replace('1', '<option value="nao">Não</option>')
       html = html.replace('2', '<option value="sim">Sim</option>')
 
+    html = html.replace('?', 'sim' if client[tipo] else 'nao')
     return html

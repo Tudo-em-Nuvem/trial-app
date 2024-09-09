@@ -34,6 +34,10 @@ def products_page():
           text-align: center;
         }}
 
+        td {{
+          cursor: pointer;
+        }}
+
         th {{
           background-color: #f2f2f2;   
         }}
@@ -59,6 +63,10 @@ def products_page():
         function click_table_product(row) {{
           var string = row.dataset.id;
           pywebview.api.click_table_product(string).then(showResponse)
+        }}
+
+        function register_product() {{
+          pywebview.api.open_register_product()
         }}
     </script>
   </html>

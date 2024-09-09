@@ -102,6 +102,8 @@ def main_page():
 def _get_menu_clients():
   clients = service.get_clients_by_date_products()[0:5]
   
+  # PRECISO FAZER COM QUE OS CLIENTES CUJO O PRODUTO TENHA SIDO EXPIRADO, IGNORAR.
+
   return f"""<table class="table"><tr> <th scope="col">Domínio</th><th scope="col">Data</th></tr>
         {"".join([f"<tr data-id={client["_id"]} onclick='clickTableClients(this)'><td>{client['domain']}</td> <td>{min([product['date_renovation'] for product in client['produtos']]).strftime("%d/%m/%Y")}</td></tr>" for client in clients])}
       </table>

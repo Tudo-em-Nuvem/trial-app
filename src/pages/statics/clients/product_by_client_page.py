@@ -62,8 +62,7 @@ def product_by_client_page(product_id):
             padding: 0.375rem 0.75rem;
             font-size: 1rem;
             line-height: 1.5;
-            border-radius: 0.25rem;   
-
+            border-radius: 0.25rem;
           }}
 
           .btn-danger {{
@@ -71,11 +70,11 @@ def product_by_client_page(product_id):
             border-color: #dc3545;
             color: #fff;
             padding: 0.375rem 0.75rem;
-            font-size:   
-          1rem;
+            font-size: 1rem;
             line-height: 1.5;
             border-radius: 0.25rem;
           }}
+
         </style>
       </head>
 
@@ -86,12 +85,12 @@ def product_by_client_page(product_id):
 
           <div class="mb-3">
             <label class="form-label">Valor</label>
-            <input type="number" id="price" value="{product['price']}" class="form-control">
+            <input type="number" id="price" data-original="{product['price']}" value="{product['price']}" class="form-control">
           </div>
           
           <div class="mb-3">
             <label class="form-label">Licenças</label>
-            <input type="number" id="licenses" value="{product['licenses']}" class="form-control">
+            <input type="number" id="licenses" data-original="{product['licenses']}" value="{product['licenses']}" class="form-control">
           </div>
 
           <div class="mb-3">
@@ -100,29 +99,89 @@ def product_by_client_page(product_id):
             <input type="date" id="date_renovation" class="form-control">
           </div>
 
-          <div class="mb-3 inLine">
-            <button class="btn btn-primary" onclick="updateProduct()">Atualizar</button>
+          <div class="notInline">
+            <label for="Expirado" class="form-label">Expirado</label>
+            {_get_select_menu_sim_nao(product)}
+          </div>
+
+          <div class="mb-3 inLine" style="margin-top: 20px;">
+            <button class="attProduct btn btn-primary " onclick="updateProduct()" disabled>Atualizar</button>
             <button class="btn btn-danger" onclick="removeProduct()">Remover</button>
           </div>
         </body>
 
         <script>
-          function updateProduct() {{
-            const price = document.getElementById('price').value
-            const licenses = document.getElementById('licenses').value
-            const date_renovation = document.getElementById('date_renovation').value
+          const input_price = document.getElementById('price')
+          const input_licenses = document.getElementById('licenses')
+          const input_date_renovation = document.getElementById('date_renovation')
+          const input_expired = document.getElementById('expired')
 
-            pywebview.api.update_product_by_client({{
+          function checkInputsIsDifferent() {{
+            let original_price = input_price.getAttribute('data-original')
+            let original_licenses = input_licenses.getAttribute('data-original')
+            let original_expired = input_expired.getAttribute('data-original')
+            
+            return original_price != input_price.value  || 
+              original_licenses != input_licenses.value || 
+              input_date_renovation.value || 
+              original_expired != input_expired.value
+          }}
+
+          input_price.addEventListener('input', () => {{
+            document.querySelector('.attProduct').disabled = !checkInputsIsDifferent()
+          }})
+
+          input_licenses.addEventListener('input', () => {{
+            document.querySelector('.attProduct').disabled = !checkInputsIsDifferent()
+          }})
+
+          input_date_renovation.addEventListener('input', () => {{
+            document.querySelector('.attProduct').disabled = !checkInputsIsDifferent()
+          }})
+
+          input_expired.addEventListener('input', () => {{
+            document.querySelector('.attProduct').disabled = !checkInputsIsDifferent()
+          }})
+
+          function updateProduct() {{
+            const price = input_price.value
+            const licenses = input_licenses.value
+            const date_renovation = input_date_renovation.value
+            const expired = input_expired.value
+
+            var actualized = {{
               price,
               licenses,
-              date_renovation
-            }})
+              date_renovation,
+              expired
+            }}
+            
+            pywebview.api.update_product_by_client(actualized)
           }}
 
           function removeProduct() {{
             pywebview.api.remove_product_by_client()
           }}
+
         </script>
       </html>
   """
+
   return html
+
+def _get_select_menu_sim_nao(product):
+    html = f"""<select name="expired" id="expired" class="form-select"  data-original="?">
+        1
+        2
+      </select>
+    """
+
+    if product['expired']:
+      html = html.replace('1', '<option value="sim">Sim</option>')
+      html = html.replace('2', '<option value="nao">Não</option>')
+    else:
+      html = html.replace('1', '<option value="nao">Não</option>')
+      html = html.replace('2', '<option value="sim">Sim</option>')
+
+    html = html.replace('?', 'sim' if product['expired'] else 'nao')
+    return html

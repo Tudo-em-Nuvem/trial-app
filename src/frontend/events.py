@@ -46,8 +46,20 @@ class Events():
       page = pages.clients_page
       active_window.load_html(page)
 
+  def open_products(self):
+    active_window = webview.active_window()
+    if active_window:
+      page = pages.products_page
+      active_window.load_html(page)
+
   def open_product(self, product_id):
     active_window = webview.active_window()
     if active_window:
       page = pages.product_page(product_id=product_id)
+      active_window.load_html(page)
+
+  def open_register_product(self):
+    active_window = webview.active_window()
+    if active_window:
+      page = pages.register_product_page()
       active_window.load_html(page)

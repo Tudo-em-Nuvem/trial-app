@@ -35,7 +35,7 @@ class Repository:
   # Products repository
 
   def _create_product(self, product):
-    self.__productCollection.insert_one(product)
+    return self.__productCollection.insert_one(product)
 
   def _find_products(self):
     return list(self.__productCollection.find())

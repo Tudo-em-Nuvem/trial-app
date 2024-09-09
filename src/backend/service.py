@@ -55,6 +55,7 @@ class Service(Repository):
     product['date_renovation'] = date
     product['licenses'] = licenses
     product['price'] = price if price else product['price']
+    product['expired'] = False
 
     client = self._find_client_by_domain(domain)
     client['produtos'].append(product)
@@ -77,6 +78,7 @@ class Service(Repository):
 
   def delete_client_by_id(self, id):
     self._delete_client(ObjectId(id))
+ 
   # Products Service
 
   def register_product(self, name, price):
@@ -85,13 +87,20 @@ class Service(Repository):
 
     product = {"name": name, "price": price}
 
-    self._create_product(product)
+    return self._create_product(product)
+
+  def update_product_by_id(self, id, fields):
+    id = ObjectId(id)
+    self._update_product({'_id': id}, {'$set': fields})
 
   def list_products(self):
     return self._find_products()
 
   def find_product_by_id(self, _id):
     return self._find_product_by_id(ObjectId(_id))
+
+  def delete_product_by_id(self, id):
+    self._delete_product(ObjectId(id))
 
   # Private methods
 

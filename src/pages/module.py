@@ -7,6 +7,7 @@ from pages.statics import clients_page
 from pages.statics import register_client_page
 from pages.statics import products_page
 from pages.statics import product_page
+from pages.statics import register_products_page
 
 class Pages():
   @property 
@@ -38,3 +39,6 @@ class Pages():
   
   def product_page(self, product_id):
     return product_page(product_id)
+  
+  def register_product_page(self):
+    return register_products_page()
