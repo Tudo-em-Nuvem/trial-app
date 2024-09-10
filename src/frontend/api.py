@@ -58,7 +58,7 @@ class Api:
       client['produtos'][product_index]['price'] = float(price)
       client['produtos'][product_index]['licenses'] = int(licenses)
       client['produtos'][product_index]['expired'] = True if expired == 'sim' else False
-      print(client)
+
       if date_renovation.strip() != '':
         date_renovation = datetime.datetime.strptime(date_renovation, '%Y-%m-%d')
         client['produtos'][product_index]['date_renovation'] = date_renovation

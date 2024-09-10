@@ -78,7 +78,7 @@ class Service(Repository):
 
   def delete_client_by_id(self, id):
     self._delete_client(ObjectId(id))
- 
+
   # Products Service
 
   def register_product(self, name, price):
